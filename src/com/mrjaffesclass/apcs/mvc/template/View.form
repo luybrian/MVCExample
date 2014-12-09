@@ -1,129 +1,269 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.mrjaffesclass.apcs.mvc.template;
-
-import com.mrjaffesclass.apcs.messenger.MessageHandler;
-import com.mrjaffesclass.apcs.messenger.Messenger;
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Label;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-
-/**
- *
- * @author barry
- */
-public class View extends JFrame implements MessageHandler {
-
-    private int numOfButtons = 8;
-    private final int BUTTON_SIZE = 30;
-    private final int BOARD_SIZE = BUTTON_SIZE * numOfButtons;
-    private Messenger messenger;
-    private Square[][] squares = new Square[numOfButtons][numOfButtons];
-    private JPanel panel = new JPanel();
-    private JPanel panel2 = new JPanel();
-    private int lives = 3;
-    private int score = 0;
-    private JLabel lifeLabel = new JLabel(lives + "");
-    private JLabel scoreLabel = new JLabel(score + "");
-
-    GridLayout layout1 = new GridLayout(0, 2);
-    GridLayout layout2 = new GridLayout(numOfButtons, numOfButtons);
-
-    public View(Messenger messenger) {
-        super("MineSweeper");
-        this.messenger = messenger;
-        this.setResizable(false);
-        this.setLocationRelativeTo(null);
-
-        panel.setLayout(layout1);
-        panel.setLayout(layout2);
-        panel.setPreferredSize(new Dimension(BOARD_SIZE, BOARD_SIZE));
-        addSquares();
-
-        panel2.add(new Label("Score:"));
-        panel2.add(scoreLabel);
-        panel2.add(new Label("Lives:"));
-        panel2.add(lifeLabel);
-
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        add(panel, BorderLayout.NORTH);
-        add(new JSeparator(), BorderLayout.CENTER);
-        add(panel2, BorderLayout.SOUTH);
-        pack();
-
-        setVisible(true);
-
-    }
-
-    public void init() {
-        messenger.subscribe("Model:ScoreAPoint", this);
-        messenger.subscribe("Model:LoseALife", this);
-        messenger.subscribe("GameOver:Reset", this);
-    }
-
-    private void addSquares() {
-        int counter = 0;
-        for (int y = 0; y < numOfButtons; y++) {
-            for (int x = 0; x < numOfButtons; x++) {
-                squares[x][y] = new Square(x, y, messenger);
-                panel.add(squares[x][y].getButton());
-
-            }
-        }
-    }
-
-    private void loseALife() {
-        lives--;
-        lifeLabel.setText(lives + "");
-        if (lives <= 0) {
-            messenger.notify("View:SendScore", score);
-            messenger.notify("View:EndGame", false);
-            
-            setVisible(false);
-        }
-    }
-
-    private void scoreAPoint() {
-        score++;
-        scoreLabel.setText(score + "");
-        if (score >= 54) {
-        messenger.notify("View:SendScore", score);
-            messenger.notify("View:EndGame", true);
-        
-        }
-    }
-
-    private void reset() {
-        score = 0;
-        lives = 3;
-        scoreLabel.setText(score + "");
-        lifeLabel.setText(lives + "");
-        setVisible(true);
-    }
-
-    @Override
-    public void messageHandler(String messageName, Object messagePayload) {
-        switch (messageName) {
-            case "Model:LoseALife":
-                loseALife();
-                break;
-            case "Model:ScoreAPoint":
-                scoreAPoint();
-                break;
-            case "GameOver:Reset":
-                reset();
-                break;
-        }
-    }
-}
+<?xml version="1.0" encoding="UTF-8" ?>
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Properties>
+<Property name="defaultCloseOperation" type="int" value="3"/>
+</Properties>
+<SyntheticProperties>
+<SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+<SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+</SyntheticProperties>
+<AuxValues>
+<AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+<AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+<AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+<AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+<AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+<AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+<AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+<AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+<AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+</AuxValues>
+<Layout>
+<DimensionLayout dim="0">
+<Group type="103" groupAlignment="0" attributes="0">
+<Group type="102" alignment="0" attributes="0">
+<EmptySpace max="-2" attributes="0"/>
+<Group type="103" groupAlignment="0" attributes="0">
+<Group type="102" alignment="0" attributes="0">
+<Group type="103" groupAlignment="0" attributes="0">
+<Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+<Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+</Group>
+<EmptySpace type="separate" max="-2" attributes="0"/>
+<Group type="103" groupAlignment="0" attributes="0">
+<Component id="fillButton" alignment="0" min="-2" max="-2" attributes="0"/>
+<Component id="textField" alignment="0" min="-2" pref="229" max="-2" attributes="0"/>
+</Group>
+</Group>
+<Group type="102" alignment="0" attributes="0">
+<Group type="103" groupAlignment="0" attributes="0">
+<Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+<Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+<Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+</Group>
+<EmptySpace type="unrelated" max="-2" attributes="0"/>
+<Group type="103" groupAlignment="0" attributes="0">
+<Group type="102" alignment="0" attributes="0">
+<Component id="clickMeButton" min="-2" max="-2" attributes="0"/>
+<EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+</Group>
+<Group type="103" alignment="1" groupAlignment="0" attributes="0">
+<Component id="noClickMeButton" alignment="0" min="-2" max="-2" attributes="0"/>
+<Component id="jToggleButton1" alignment="0" min="-2" max="-2" attributes="0"/>
+</Group>
+</Group>
+</Group>
+<Component id="jLabel2" alignment="0" min="-2" pref="343" max="-2" attributes="0"/>
+<Group type="102" alignment="0" attributes="0">
+<Component id="jLabel7" min="-2" max="-2" attributes="0"/>
+<EmptySpace type="unrelated" max="-2" attributes="0"/>
+<Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+<EmptySpace max="-2" attributes="0"/>
+<Component id="upButton1" min="-2" max="-2" attributes="0"/>
+<EmptySpace max="-2" attributes="0"/>
+<Component id="downButton1" min="-2" max="-2" attributes="0"/>
+</Group>
+<Group type="102" alignment="0" attributes="0">
+<Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+<EmptySpace type="unrelated" max="-2" attributes="0"/>
+<Component id="jLabel10" min="-2" max="-2" attributes="0"/>
+<EmptySpace max="-2" attributes="0"/>
+<Component id="upButton2" min="-2" max="-2" attributes="0"/>
+<EmptySpace max="-2" attributes="0"/>
+<Component id="downButton2" min="-2" max="-2" attributes="0"/>
+</Group>
+<Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
+</Group>
+<EmptySpace pref="51" max="32767" attributes="0"/>
+</Group>
+</Group>
+</DimensionLayout>
+<DimensionLayout dim="1">
+<Group type="103" groupAlignment="0" attributes="0">
+<Group type="102" alignment="0" attributes="0">
+<Group type="103" groupAlignment="0" attributes="0">
+<Group type="102" alignment="0" attributes="0">
+<Component id="clickMeButton" min="-2" max="-2" attributes="0"/>
+<EmptySpace max="-2" attributes="0"/>
+<Component id="jToggleButton1" min="-2" max="-2" attributes="0"/>
+<EmptySpace max="-2" attributes="0"/>
+<Component id="noClickMeButton" min="-2" max="-2" attributes="0"/>
+</Group>
+<Group type="102" alignment="0" attributes="0">
+<EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
+<Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+<EmptySpace max="-2" attributes="0"/>
+<Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+<EmptySpace max="-2" attributes="0"/>
+<Component id="jLabel6" min="-2" max="-2" attributes="0"/>
+</Group>
+</Group>
+<EmptySpace type="separate" max="-2" attributes="0"/>
+<Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+<EmptySpace max="-2" attributes="0"/>
+<Group type="103" groupAlignment="3" attributes="0">
+<Component id="textField" alignment="3" min="-2" max="-2" attributes="0"/>
+<Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+</Group>
+<EmptySpace max="-2" attributes="0"/>
+<Group type="103" groupAlignment="3" attributes="0">
+<Component id="fillButton" alignment="3" min="-2" max="-2" attributes="0"/>
+<Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+</Group>
+<EmptySpace pref="12" max="32767" attributes="0"/>
+<Component id="jLabel11" min="-2" max="-2" attributes="0"/>
+<EmptySpace max="-2" attributes="0"/>
+<Group type="103" groupAlignment="3" attributes="0">
+<Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
+<Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
+<Component id="upButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+<Component id="downButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+</Group>
+<EmptySpace max="-2" attributes="0"/>
+<Group type="103" groupAlignment="3" attributes="0">
+<Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
+<Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
+<Component id="upButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+<Component id="downButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+</Group>
+</Group>
+</Group>
+</DimensionLayout>
+</Layout>
+<SubComponents>
+<Component class="javax.swing.JButton" name="clickMeButton">
+<Properties>
+<Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+<Color blue="0" green="0" red="0" type="rgb"/>
+</Property>
+<Property name="text" type="java.lang.String" value="Click me!"/>
+<Property name="toolTipText" type="java.lang.String" value="Click me to see the View send a message to the Controller to let it know that the button was pushed"/>
+<Property name="actionCommand" type="java.lang.String" value="button1Clicked"/>
+</Properties>
+<Events>
+<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clickMeButtonbuttonClickActionPerformed"/>
+</Events>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel1">
+<Properties>
+<Property name="text" type="java.lang.String" value="MVC Framework Template"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JToggleButton" name="jToggleButton1">
+<Properties>
+<Property name="text" type="java.lang.String" value="Toggle button!"/>
+<Property name="actionCommand" type="java.lang.String" value="toggleButtonClicked"/>
+</Properties>
+<Events>
+<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jToggleButton1ActionPerformed"/>
+</Events>
+</Component>
+<Component class="javax.swing.JButton" name="noClickMeButton">
+<Properties>
+<Property name="text" type="java.lang.String" value="No, click me!!"/>
+<Property name="actionCommand" type="java.lang.String" value="noClickMeButton!"/>
+</Properties>
+<Events>
+<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="noClickMeButtonbuttonClickActionPerformed"/>
+</Events>
+</Component>
+<Component class="javax.swing.JTextField" name="textField">
+<Properties>
+<Property name="text" type="java.lang.String" value="Empty"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JButton" name="fillButton">
+<Properties>
+<Property name="text" type="java.lang.String" value="New text goes here"/>
+</Properties>
+<Events>
+<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fillButtonActionPerformed"/>
+</Events>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel2">
+<Properties>
+<Property name="text" type="java.lang.String" value="Click the button to move the input text to the button"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel3">
+<Properties>
+<Property name="text" type="java.lang.String" value="Input text:"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel4">
+<Properties>
+<Property name="text" type="java.lang.String" value="Button:"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel5">
+<Properties>
+<Property name="text" type="java.lang.String" value="Clicking these buttons will"/>
+<Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+<Dimension value="[45, 60]"/>
+</Property>
+</Properties>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel6">
+<Properties>
+<Property name="text" type="java.lang.String" value="send a message to the console"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel7">
+<Properties>
+<Property name="text" type="java.lang.String" value="Number 1:"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel8">
+<Properties>
+<Property name="text" type="java.lang.String" value="jLabel8"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel9">
+<Properties>
+<Property name="text" type="java.lang.String" value="Number 2:"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel10">
+<Properties>
+<Property name="text" type="java.lang.String" value="jLabel8"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JLabel" name="jLabel11">
+<Properties>
+<Property name="text" type="java.lang.String" value="Use the buttons to control the numbers"/>
+</Properties>
+</Component>
+<Component class="javax.swing.JButton" name="upButton1">
+<Properties>
+<Property name="text" type="java.lang.String" value="Up"/>
+</Properties>
+<Events>
+<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="upButton1ActionPerformed"/>
+</Events>
+</Component>
+<Component class="javax.swing.JButton" name="upButton2">
+<Properties>
+<Property name="text" type="java.lang.String" value="Up"/>
+</Properties>
+<Events>
+<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="upButton2ActionPerformed"/>
+</Events>
+</Component>
+<Component class="javax.swing.JButton" name="downButton1">
+<Properties>
+<Property name="text" type="java.lang.String" value="Down"/>
+</Properties>
+<Events>
+<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="downButton1ActionPerformed"/>
+</Events>
+</Component>
+<Component class="javax.swing.JButton" name="downButton2">
+<Properties>
+<Property name="text" type="java.lang.String" value="Down"/>
+</Properties>
+<Events>
+<EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="downButton2ActionPerformed"/>
+</Events>
+</Component>
+</SubComponents>
+</Form>
