@@ -22,7 +22,7 @@ import javax.swing.JLabel;
 public class GameOver extends JFrame implements MessageHandler {
 
     JLabel winorlose = new JLabel("test");
-    JButton button = new JButton("Play Again?");
+    JButton button = new JButton("Put me back in coach!");
     int score;
     private Messenger m;
 
@@ -56,9 +56,9 @@ public class GameOver extends JFrame implements MessageHandler {
 
     private void appear(boolean state){
         if(state)
-            winorlose.setText("YOU WIN!!! With a score of : "+score);
+            winorlose.setText("You the winner! With a score of : "+score);
         else
-            winorlose.setText("You lose  with a score of : "+score);
+            winorlose.setText("You the loser!  with a score of : "+score);
         setVisible(true);
     }
     private void setScore(int s){
